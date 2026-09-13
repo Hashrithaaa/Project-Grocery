@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Pantry List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF7F2;
+    --paper-line:#EFE8DD;
+    --card:#FFFEF9;
+    --ink:#2B2A25;
+    --ink-soft:#8B7D6B;
+    --basil:#4A7C5F;
+    --basil-dark:#2D5A42;
+    --basil-tint:#E8F2EB;
+    --brick:#D64545;
+    --brick-tint:#F8DEDE;
+    --mustard:#E8A035;
+    --mustard-tint:#FBF0E0;
+    --peachy:#F5A678;
+    --peachy-tint:#FDEBD8;
+    --lavender:#C9A7D4;
+    --lavender-tint:#F4EDFA;
+    --border:#E8DDD0;
+    --gradient-warm: linear-gradient(135deg, #F5A678 0%, #E8A035 100%);
+    --gradient-cool: linear-gradient(135deg, #4A7C5F 0%, #2D5A42 100%);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      repeating-linear-gradient(var(--paper) 0px, var(--paper) 34px, var(--paper-line) 35px);
+    color:var(--ink);
+    font-family:'Karla', system-ui, sans-serif;
+    min-height:100vh;
+    padding:2.5rem 1.25rem 4rem;
+  }
+  .sheet{
+    max-width:720px;
+    margin:0 auto;
+  }
+
+  /* auth screens */
+  .auth-wrap{
+    max-width:420px;
+    margin:3rem auto 0;
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:16px;
+    padding:2.5rem 2rem;
+    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+  }
+  .auth-wrap h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.8rem;
+    margin:0 0 0.5rem;
+    background:var(--gradient-warm);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .auth-sub{
+    font-size:0.95rem;
+    color:var(--ink-soft);
+    margin:0 0 1.8rem;
+    line-height:1.6;
+  }
+  .auth-wrap label{
+    display:block;
+    font-size:0.85rem;
+    font-weight:700;
+    margin-bottom:0.5rem;
+    color:var(--ink);
+  }
+  .auth-wrap input[type=text],
+  .auth-wrap input[type=password]{
+    width:100%;
+    margin-bottom:1rem;
+    font-family:'Karla', sans-serif;
+    font-size:0.95rem;
+    padding:0.8rem 1rem;
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    background:var(--card);
+    color:var(--ink);
+    transition:border-color 0.2s;
+  }
+  .auth-wrap input[type=text]:focus,
+  .auth-wrap input[type=password]:focus{
+    outline:none;
+    border-color:var(--mustard);
+    box-shadow:0 0 0 3px var(--mustard-tint);
+  }
+  .primary{
+    width:100%;
+    margin-top:0.5rem;
+    background:var(--gradient-warm);
+    color:white;
+    border:none;
+    font-weight:700;
+    font-size:1rem;
+    padding:0.9rem 1.2rem;
+    border-radius:10px;
+    cursor:pointer;
+    transition:transform 0.2s, box-shadow 0.2s;
+  }
+  .primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 16px rgba(245,166,120,0.3);
+  }
+  .secondary-btn{
+    width:100%;
+    margin-top:1rem;
+    background:var(--lavender-tint);
+    color:var(--lavender);
+    border:2px solid var(--lavender);
+    font-weight:700;
+    font-size:0.95rem;
+    padding:0.8rem 1.2rem;
+    border-radius:10px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .secondary-btn:hover{
+    background:var(--lavender);
+    color:white;
+  }
+  .auth-link{
+    text-align:center;
+    margin-top:1.5rem;
+    font-size:0.9rem;
+    color:var(--ink-soft);
+  }
+  .auth-link button{
+    background:none;
+    border:none;
+    color:var(--mustard);
+    font-weight:700;
+    cursor:pointer;
+    padding:0;
+    font-size:0.9rem;
+  }
+  .auth-link button:hover{
+    color:var(--peachy);
+  }
+  .profile-list{margin:1.5rem 0 0;}
+  .profile-list p{font-size:0.82rem;color:var(--ink-soft);margin:0 0 0.8rem;font-weight:600;}
+  .profile-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:0.5rem;
+    background:var(--basil-tint);
+    color:var(--basil-dark);
+    border:2px solid var(--basil);
+    border-radius:99px;
+    padding:0.5rem 1rem 0.5rem 0.5rem;
+    font-size:0.9rem;
+    font-weight:700;
+    margin:0 0.5rem 0.5rem 0;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .profile-chip:hover{
+    background:var(--basil);
+    color:white;
+  }
+  .profile-chip .avatar{
+    width:26px;height:26px;border-radius:50%;
+    background:var(--basil);color:var(--card);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:0.8rem;
+    font-weight:700;
+  }
+  .profile-chip:hover .avatar{
+    background:var(--card);
+    color:var(--basil);
+  }
+  .error-msg{
+    color:var(--brick);
+    font-size:0.85rem;
+    margin:-0.8rem 0 1rem;
+    padding:0.7rem;
+    background:var(--brick-tint);
+    border-radius:8px;
+    display:none;
+  }
+  #signup-screen{display:none;}
+  #login-screen{display:none;}
+
+  /* app */
+  #app{display:none;}
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:1.75rem;
+    padding-bottom:1rem;
+    border-bottom:2px solid var(--basil);
+  }
+  .header-left{display:flex;align-items:baseline;gap:0.7rem;flex-wrap:wrap;}
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:2rem;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  #item-count{font-size:0.85rem;color:var(--ink-soft);}
+  .header-right{display:flex;align-items:center;gap:0.7rem;}
+  #current-user-label{font-size:0.85rem;color:var(--ink-soft);}
+  #current-user-label strong{color:var(--ink);}
+  #switch-user-btn{
+    background:var(--lavender-tint);
+    color:var(--lavender);
+    border:2px solid var(--lavender);
+    font-weight:600;
+    font-size:0.82rem;
+    padding:0.5rem 0.9rem;
+    border-radius:8px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  #switch-user-btn:hover{
+    background:var(--lavender);
+    color:white;
+  }
+
+  .add-row{display:flex;gap:0.5rem;margin-bottom:1rem;}
+  input[type=text], input[type=number]{
+    font-family:'Karla', sans-serif;
+    font-size:0.95rem;
+    padding:0.65rem 0.8rem;
+    border:1.5px solid var(--border);
+    border-radius:8px;
+    background:var(--card);
+    color:var(--ink);
+    transition:border-color 0.2s;
+  }
+  input[type=text]:focus, input[type=number]:focus{
+    outline:none;
+    border-color:var(--mustard);
+    box-shadow:0 0 0 3px var(--mustard-tint);
+  }
+  #new-item{flex:1;min-width:0;}
+  #new-qty{width:80px;}
+  button{
+    font-family:'Karla', sans-serif;
+    font-weight:700;
+    font-size:0.9rem;
+    padding:0.65rem 1.1rem;
+    border-radius:8px;
+    border:1.5px solid var(--basil);
+    background:var(--basil);
+    color:white;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  button:hover{
+    background:var(--basil-dark);
+    border-color:var(--basil-dark);
+  }
+  button.ghost{
+    background:transparent;
+    color:var(--ink);
+    border-color:var(--border);
+    font-weight:500;
+  }
+  button.ghost:hover{
+    background:var(--peachy-tint);
+    border-color:var(--peachy);
+  }
+  .search-row{margin-bottom:1.5rem;}
+  .search-row input{width:100%;}
+  section.block{margin-bottom:2.25rem;}
+  .block-title{
+    font-family:'Fraunces', serif;
+    font-size:1.15rem;
+    font-weight:500;
+    margin:0 0 0.3rem;
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+    color:var(--basil-dark);
+  }
+  .block-sub{font-size:0.82rem;color:var(--ink-soft);margin:0 0 0.8rem;}
+  .badge{
+    font-size:0.7rem;font-weight:700;padding:0.1rem 0.5rem;border-radius:99px;
+    background:var(--brick-tint);color:var(--brick);
+  }
+
+  table.list{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  table.list th{
+    text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;
+    color:var(--ink-soft);font-weight:700;padding:0.75rem 0.9rem;
+    border-bottom:2px solid var(--border);
+    background:var(--lavender-tint);
+  }
+  table.list td{padding:0.75rem 0.9rem;border-bottom:1px solid var(--border);vertical-align:middle;font-size:0.95rem;}
+  table.list tr:last-child td{border-bottom:none;}
+  table.list tr.out td{background:var(--brick-tint);}
+  td.col-item{text-transform:capitalize;font-weight:500;color:var(--basil-dark);}
+  tr.out td.col-item{color:var(--brick);}
+  td.col-status{font-size:0.82rem;color:var(--ink-soft);white-space:nowrap;}
+  tr.out td.col-status{color:var(--brick);font-weight:700;}
+  td.col-qty{white-space:nowrap;}
+  td.col-actions{text-align:right;white-space:nowrap;}
+
+  .qty-controls{display:flex;align-items:center;gap:0.4rem;}
+  .qty-controls button{width:26px;height:26px;padding:0;line-height:1;font-size:0.95rem;border-radius:6px;}
+  .qty-val{min-width:1.8rem;text-align:center;font-weight:700;font-variant-numeric:tabular-nums;}
+  .del-btn{background:transparent;border:none;color:var(--ink-soft);font-size:1.15rem;cursor:pointer;padding:0.2rem 0.4rem;}
+  .del-btn:hover{color:var(--brick);}
+  .empty-note{color:var(--ink-soft);font-size:0.92rem;padding:1rem 0.2rem;font-style:italic;}
+  .toast{
+    position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
+    background:var(--basil-dark);color:white;padding:0.75rem 1.5rem;border-radius:10px;
+    font-size:0.9rem;opacity:0;pointer-events:none;transition:opacity 0.25s ease, transform 0.25s ease;
+    box-shadow:0 6px 16px rgba(0,0,0,0.15);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+  .insight-card{
+    background:var(--card);
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    padding:1rem 1.2rem;
+    margin-bottom:0.8rem;
+    background:linear-gradient(135deg, var(--lavender-tint) 0%, var(--peachy-tint) 100%);
+  }
+  .insight-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;}
+  .insight-name{font-weight:700;text-transform:capitalize;color:var(--basil-dark);}
+  .insight-pill{font-size:0.72rem;font-weight:700;padding:0.15rem 0.65rem;border-radius:99px;background:var(--mustard-tint);color:var(--mustard);white-space:nowrap;}
+  .insight-pill.low{background:var(--brick-tint);color:var(--brick);}
+  .insight-line{font-size:0.88rem;color:var(--ink-soft);margin:0.2rem 0;}
+  .insight-line strong{color:var(--basil-dark);font-weight:700;}
+</style>
+</head>
+<body>
+
+<!-- Signup Screen -->
+<div class="auth-wrap" id="signup-screen">
+  <h1>Welcome! 👋</h1>
+  <p class="auth-sub">Create your account to start organizing your pantry list.</p>
+  <label for="signup-email">Email</label>
+  <input type="text" id="signup-email" placeholder="you@example.com" autocomplete="email">
+  <label for="signup-password">Create a password</label>
+  <input type="password" id="signup-password" placeholder="Make it something you'll remember">
+  <label for="signup-confirm">Confirm password</label>
+  <input type="password" id="signup-confirm" placeholder="Type it again">
+  <div id="signup-error" class="error-msg"></div>
+  <button class="primary" id="signup-btn">Create Account</button>
+  <div class="auth-link">
+    Already have an account? <button onclick="switchToLogin()">Sign in here</button>
+  </div>
+</div>
+
+<!-- Login Screen -->
+<div class="auth-wrap" id="login-screen">
+  <h1>Welcome back! 🏡</h1>
+  <p class="auth-sub">Sign in to your pantry list and keep your groceries organized.</p>
+  <label for="login-email">Email</label>
+  <input type="text" id="login-email" placeholder="you@example.com" autocomplete="email">
+  <label for="login-password">Password</label>
+  <input type="password" id="login-password" placeholder="Your password">
+  <div id="login-error" class="error-msg"></div>
+  <button class="primary" id="login-btn">Sign In</button>
+  <div class="profile-list" id="profile-list" style="display:none;">
+    <p>Or continue as</p>
+    <div id="profile-chips"></div>
+  </div>
+  <div class="auth-link">
+    Don't have an account? <button onclick="switchToSignup()">Create one here</button>
+  </div>
+</div>
+
+<div class="sheet" id="app">
+  <header>
+    <div class="header-left">
+      <h1>The Pantry</h1>
+      <span id="item-count"></span>
+    </div>
+    <div class="header-right">
+      <div id="current-user-label">Logged in as <strong id="user-display"></strong></div>
+      <button id="switch-user-btn" class="ghost">Switch User</button>
+    </div>
+  </header>
+
+  <div class="add-row">
+    <input type="text" id="new-item" placeholder="Add something (milk, eggs, bread...)">
+    <input type="number" id="new-qty" value="1" min="0">
+    <button id="add-btn">Add</button>
+  </div>
+  <div id="add-error" class="error-msg"></div>
+
+  <div class="search-row">
+    <input type="text" id="search" placeholder="Search your list...">
+  </div>
+
+  <section class="block">
+    <h2 class="block-title">In Stock</h2>
+    <div id="empty-note" class="empty-note"></div>
+    <table class="list" id="items-table">
+      <thead><tr><th>Item</th><th>Quantity</th><th>Status</th><th></th></tr></thead>
+      <tbody id="items-body"></tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2 class="block-title">Out of Stock <span class="badge" id="out-count" style="display:none;"></span></h2>
+    <div id="out-empty" class="empty-note"></div>
+    <table class="list" id="out-table">
+      <thead><tr><th>Item</th><th>Quantity</th><th>Status</th><th></th></tr></thead>
+      <tbody id="out-body"></tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2 class="block-title">Insights</h2>
+    <div id="insights-empty" class="empty-note">No insights yet. Track some items to see how often you restock.</div>
+    <div id="insights-list"></div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let items = {};
+let history = {};
+let currentUser = null;
+
+const storageKey = 'pantry-users';
+const usersDB = {};
+
+function saveUsers(){
+  localStorage.setItem(storageKey, JSON.stringify(usersDB));
+}
+
+function loadUsers(){
+  const stored = localStorage.getItem(storageKey);
+  if (stored) Object.assign(usersDB, JSON.parse(stored));
+}
+
+function saveItems(){
+  if (currentUser){
+    const key = 'pantry-items-' + currentUser;
+    localStorage.setItem(key, JSON.stringify(items));
+  }
+}
+
+function loadItems(){
+  if (currentUser){
+    const key = 'pantry-items-' + currentUser;
+    const stored = localStorage.getItem(key);
+    items = stored ? JSON.parse(stored) : {};
+  }
+}
+
+function saveHistory(){
+  if (currentUser){
+    const key = 'pantry-history-' + currentUser;
+    localStorage.setItem(key, JSON.stringify(history));
+  }
+}
+
+function loadHistory(){
+  if (currentUser){
+    const key = 'pantry-history-' + currentUser;
+    const stored = localStorage.getItem(key);
+    history = stored ? JSON.parse(stored) : {};
+  }
+}
+
+// AUTH FLOW
+function switchToSignup(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('signup-screen').style.display = 'block';
+  clearErrors();
+}
+
+function switchToLogin(){
+  document.getElementById('signup-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'block';
+  clearErrors();
+}
+
+function clearErrors(){
+  document.getElementById('signup-error').style.display = 'none';
+  document.getElementById('login-error').style.display = 'none';
+}
+
+function showSignupError(msg){
+  const el = document.getElementById('signup-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function showLoginError(msg){
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+document.getElementById('signup-btn').addEventListener('click', signup);
+document.getElementById('login-btn').addEventListener('click', login);
+
+function signup(){
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const confirm = document.getElementById('signup-confirm').value;
+
+  if (!email || !password || !confirm){
+    showSignupError('Please fill in all fields');
+    return;
+  }
+
+  if (password !== confirm){
+    showSignupError('Passwords do not match');
+    return;
+  }
+
+  if (password.length < 4){
+    showSignupError('Password must be at least 4 characters');
+    return;
+  }
+
+  if (email in usersDB){
+    showSignupError('This email is already registered');
+    return;
+  }
+
+  // Create account
+  usersDB[email] = password;
+  saveUsers();
+
+  // Clear form and switch to login
+  document.getElementById('signup-email').value = '';
+  document.getElementById('signup-password').value = '';
+  document.getElementById('signup-confirm').value = '';
+  showToast('Account created! Now sign in.');
+  setTimeout(() => switchToLogin(), 800);
+}
+
+function login(){
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+
+  if (!email || !password){
+    showLoginError('Please enter email and password');
+    return;
+  }
+
+  if (!(email in usersDB)){
+    showLoginError('Email not found. Create an account first.');
+    return;
+  }
+
+  if (usersDB[email] !== password){
+    showLoginError('Incorrect password');
+    return;
+  }
+
+  // Login successful
+  currentUser = email;
+  loadItems();
+  loadHistory();
+  showApp();
+}
+
+function logout(){
+  currentUser = null;
+  items = {};
+  history = {};
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'block';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+  clearErrors();
+}
+
+function showApp(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('signup-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('user-display').textContent = currentUser.split('@')[0];
+  render();
+}
+
+function initLogin(){
+  loadUsers();
+  const stored = localStorage.getItem('pantry-current-user');
+  if (stored && stored in usersDB){
+    currentUser = stored;
+    loadItems();
+    loadHistory();
+    showApp();
+  } else {
+    document.getElementById('signup-screen').style.display = 'block';
+  }
+}
+
+// PANTRY LOGIC
+function showToast(msg){
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.remove('show');
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function transitionQty(name, fromQty, toQty){
+  if (!history[name]) history[name] = [];
+  const cycles = history[name];
+
+  if (fromQty > 0 && toQty === 0){
+    const active = cycles.length && cycles[cycles.length-1].end === null ? cycles[cycles.length-1] : null;
+    if (active){
+      active.end = Date.now();
+      active.days = (active.end - active.start) / (1000*60*60*24);
+    }
+  }
+
+  if (fromQty === 0 && toQty > 0){
+    cycles.push({start: Date.now(), end: null, qtyStart: toQty, days: 0});
+  }
+}
+
+function formatSince(timestamp){
+  const days = (Date.now() - timestamp) / (1000*60*60*24);
+  if (days < 1) return 'today';
+  if (days < 2) return '1 day ago';
+  return Math.floor(days) + ' days ago';
+}
+
+function render(){
+  const search = document.getElementById('search').value.trim().toLowerCase();
+  const names = Object.keys(items).filter(n => n.includes(search)).sort();
+
+  const total = Object.keys(items).length;
+  document.getElementById('item-count').textContent = total + (total === 1 ? ' item' : ' items');
+
+  const inStockNames = names.filter(n => items[n] > 0);
+  const outStockNames = names.filter(n => items[n] === 0);
+
+  // in-stock table
+  const tbody = document.getElementById('items-body');
+  const emptyNote = document.getElementById('empty-note');
+  tbody.innerHTML = '';
+  if (inStockNames.length === 0){
+    emptyNote.style.display = 'block';
+    document.getElementById('items-table').style.display = 'none';
+    emptyNote.textContent = total === 0
+      ? 'Your list is empty. Add something above to get started.'
+      : 'Nothing matches that search.';
+  } else {
+    emptyNote.style.display = 'none';
+    document.getElementById('items-table').style.display = 'table';
+    inStockNames.forEach(name => tbody.appendChild(buildRow(name)));
+  }
+
+  // out-of-stock table
+  const outBody = document.getElementById('out-body');
+  const outEmpty = document.getElementById('out-empty');
+  const outTable = document.getElementById('out-table');
+  const outCount = document.getElementById('out-count');
+  outBody.innerHTML = '';
+  if (outStockNames.length === 0){
+    outEmpty.style.display = 'block';
+    outTable.style.display = 'none';
+    outCount.style.display = 'none';
+    outEmpty.textContent = search
+      ? 'Nothing out of stock matches that search.'
+      : "Nothing's run out. Anything at 0 will show up here.";
+  } else {
+    outEmpty.style.display = 'none';
+    outTable.style.display = 'table';
+    outCount.style.display = 'inline-block';
+    outCount.textContent = outStockNames.length;
+    outStockNames.forEach(name => outBody.appendChild(buildRow(name)));
+  }
+
+  renderInsights();
+}
+
+function buildRow(name){
+  const qty = items[name];
+  const isOut = qty === 0;
+  const tr = document.createElement('tr');
+  tr.className = isOut ? 'out' : '';
+
+  const tdName = document.createElement('td');
+  tdName.className = 'col-item';
+  tdName.textContent = name;
+
+  const tdQty = document.createElement('td');
+  tdQty.className = 'col-qty';
+  const controls = document.createElement('div');
+  controls.className = 'qty-controls';
+  const minus = document.createElement('button');
+  minus.className = 'ghost';
+  minus.textContent = '−';
+  minus.setAttribute('aria-label', 'Decrease quantity');
+  minus.onclick = () => updateQty(name, qty - 1);
+  const val = document.createElement('span');
+  val.className = 'qty-val';
+  val.textContent = qty;
+  const plus = document.createElement('button');
+  plus.className = 'ghost';
+  plus.textContent = '+';
+  plus.setAttribute('aria-label', 'Increase quantity');
+  plus.onclick = () => updateQty(name, qty + 1);
+  controls.appendChild(minus);
+  controls.appendChild(val);
+  controls.appendChild(plus);
+  tdQty.appendChild(controls);
+
+  const tdStatus = document.createElement('td');
+  tdStatus.className = 'col-status';
+  if (isOut){
+    tdStatus.textContent = 'Out of stock';
+  } else {
+    const cycles = history[name];
+    const active = cycles && cycles.length && cycles[cycles.length-1].end === null
+      ? cycles[cycles.length-1] : null;
+    tdStatus.textContent = active ? ('Restocked ' + formatSince(active.start)) : 'In stock';
+  }
+
+  const tdActions = document.createElement('td');
+  tdActions.className = 'col-actions';
+  const del = document.createElement('button');
+  del.className = 'del-btn';
+  del.innerHTML = '&times;';
+  del.setAttribute('aria-label', 'Remove ' + name);
+  del.onclick = () => removeItem(name);
+  tdActions.appendChild(del);
+
+  tr.appendChild(tdName);
+  tr.appendChild(tdQty);
+  tr.appendChild(tdStatus);
+  tr.appendChild(tdActions);
+  return tr;
+}
+
+function updateQty(name, newQty){
+  if (newQty < 0) newQty = 0;
+  const oldQty = items[name];
+  transitionQty(name, oldQty, newQty);
+  items[name] = newQty;
+  saveItems();
+  saveHistory();
+  render();
+}
+
+function removeItem(name){
+  delete items[name];
+  saveItems();
+  render();
+  showToast('Removed ' + name);
+}
+
+function addItem(){
+  const nameInput = document.getElementById('new-item');
+  const qtyInput = document.getElementById('new-qty');
+  const errorEl = document.getElementById('add-error');
+  const name = nameInput.value.trim().toLowerCase();
+  const qtyRaw = qtyInput.value;
+
+  errorEl.style.display = 'none';
+
+  if (!name){
+    errorEl.textContent = 'Enter an item name first';
+    errorEl.style.display = 'block';
+    return;
+  }
+  const qty = parseInt(qtyRaw, 10);
+  if (qtyRaw === '' || isNaN(qty) || qty < 0){
+    errorEl.textContent = 'Enter a quantity of 0 or more';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  const existed = name in items;
+  const oldQty = existed ? items[name] : 0;
+  transitionQty(name, oldQty, qty);
+  items[name] = qty;
+  saveItems();
+  saveHistory();
+  render();
+  nameInput.value = '';
+  qtyInput.value = '1';
+  nameInput.focus();
+  showToast(existed ? 'Updated ' + name : 'Added ' + name);
+}
+
+function renderInsights(){
+  const list = document.getElementById('insights-list');
+  const emptyEl = document.getElementById('insights-empty');
+  list.innerHTML = '';
+
+  const namesWithHistory = Object.keys(history).filter(n => {
+    const completed = (history[n] || []).filter(c => c.end !== null);
+    return completed.length > 0;
+  });
+
+  if (namesWithHistory.length === 0){
+    emptyEl.style.display = 'block';
+    return;
+  }
+  emptyEl.style.display = 'none';
+
+  namesWithHistory.sort().forEach(name => {
+    const completed = history[name].filter(c => c.end !== null);
+    const avgDays = completed.reduce((s,c) => s + c.days, 0) / completed.length;
+    const avgQty = completed.reduce((s,c) => s + c.qtyStart, 0) / completed.length;
+    const perDay = avgQty / avgDays;
+    const recFor14 = Math.max(1, Math.ceil(perDay * 14));
+
+    const daysLabel = avgDays < 1
+      ? Math.round(avgDays * 24) + ' hours'
+      : Math.round(avgDays * 10) / 10 + (avgDays >= 2 ? ' days' : ' day');
+
+    const isOutNow = items[name] === 0;
+
+    const card = document.createElement('div');
+    card.className = 'insight-card';
+
+    const top = document.createElement('div');
+    top.className = 'insight-top';
+    const nameEl = document.createElement('span');
+    nameEl.className = 'insight-name';
+    nameEl.textContent = name;
+    const pill = document.createElement('span');
+    pill.className = 'insight-pill' + (isOutNow ? ' low' : '');
+    pill.textContent = isOutNow ? 'Out now' : 'In stock';
+    top.appendChild(nameEl);
+    top.appendChild(pill);
+
+    const lastLine = document.createElement('p');
+    lastLine.className = 'insight-line';
+    lastLine.innerHTML = 'Lasts about <strong>' + daysLabel + '</strong> per <strong>' +
+      (Math.round(avgQty * 10) / 10) + '</strong> bought, based on ' + completed.length +
+      (completed.length === 1 ? ' cycle' : ' cycles') + '.';
+
+    const buyLine = document.createElement('p');
+    buyLine.className = 'insight-line';
+    buyLine.innerHTML = 'To cover 2 weeks, buy about <strong>' + recFor14 + '</strong>.';
+
+    card.appendChild(top);
+    card.appendChild(lastLine);
+    card.appendChild(buyLine);
+    list.appendChild(card);
+  });
+}
+
+document.getElementById('add-btn').addEventListener('click', addItem);
+document.getElementById('new-item').addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
+document.getElementById('new-qty').addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
+document.getElementById('search').addEventListener('input', render);
+document.getElementById('switch-user-btn').addEventListener('click', logout);
+
+initLogin();
+</script>
+</body>
+</html>
